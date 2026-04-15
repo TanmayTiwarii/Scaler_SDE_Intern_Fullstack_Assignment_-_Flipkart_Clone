@@ -1,0 +1,86 @@
+.checkoutContainer {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  gap: 24px;
+}
+
+.mainColumn {
+  flex: 1;
+}
+
+.stepBox {
+  background: var(--white);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.stepHeader {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stepNumber {
+  background: var(--white);
+  color: var(--primary-blue);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.stepContent {
+  padding: 24px;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  color: var(--text-gray);
+  margin-bottom: 8px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--primary-blue);
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+}
+
+.col {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .checkoutContainer {
+    flex-direction: column;
+  }
+}

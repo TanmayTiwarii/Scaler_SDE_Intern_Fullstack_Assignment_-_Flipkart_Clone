@@ -1,0 +1,250 @@
+.navbarWrapper {
+  background-color: #f1f2f4; /* The standard flipkart gray background */
+}
+
+.header {
+  background-color: var(--white);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.topRow {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 8px 16px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brandTabs {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.brandTab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 25px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  height: 44px;
+}
+
+.activeTab {
+  background-color: rgb(255, 229, 31); 
+}
+
+.brandLogo {
+  height: 24px;
+}
+
+.travelTab {
+  background-color: #f0f0f0;
+  color: #212121;
+}
+
+.travelLogo {
+  height: 18px;
+  margin-right: 6px;
+}
+
+.travelText {
+  font-weight: 600;
+  font-style: italic;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  gap: 4px;
+}
+
+.pinIcon {
+  height: 16px;
+  opacity: 0.8;
+}
+
+.locationText {
+  color: #555;
+  font-weight: 500;
+}
+
+.locationLink {
+  color: #2874f0;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.locationLink:hover {
+  text-decoration: underline;
+}
+
+.middleRow {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.searchBar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: #f0f5ff;
+  border-radius: 8px;
+  padding: 0;
+  height: 40px;
+  transition: background-color 0.2s;
+}
+
+.searchBar:focus-within {
+  background-color: var(--white);
+  box-shadow: 0 0 0 1px #2874f0;
+}
+
+.searchIcon {
+  padding-left: 12px;
+  color: #717478;
+  width: 32px;
+}
+
+.searchInput {
+  flex: 1;
+  height: 100%;
+  padding: 0 16px 0 8px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #212121;
+}
+
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.loginAction {
+  position: relative;
+}
+
+.loginBtn {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #212121;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.loginBtn:hover {
+  background-color: #f0f5ff;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #212121;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.navItem:hover {
+  color: #2874f0;
+}
+
+.cartBadge {
+  background-color: #ff6a00;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 6px;
+  border-radius: 10px;
+  margin-left: 2px;
+}
+
+.categoriesRow {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.categoriesRow::-webkit-scrollbar {
+  display: none;
+}
+
+.categoryItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 0 8px 12px;
+  min-width: 72px;
+  border-bottom: 3px solid transparent;
+}
+
+.categoryItem:hover .catName {
+  color: #2874f0;
+}
+
+.activeCategory {
+  border-bottom-color: #2874f0;
+}
+
+.activeCategory .catName {
+  color: #2874f0;
+  font-weight: 600;
+}
+
+.catIcon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.catImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.catName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212121;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .topRow, .navActions {
+    display: none;
+  }
+}
