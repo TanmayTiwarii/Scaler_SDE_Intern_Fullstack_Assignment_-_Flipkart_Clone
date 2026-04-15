@@ -27,7 +27,7 @@
 
 body {
   font-family: 'Roboto', 'Inter', sans-serif;
-  background-color: var(--bg-color);
+  background-color: var(--white);
   color: var(--text-dark);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

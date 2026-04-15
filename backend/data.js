@@ -7,10 +7,10 @@ const products = [
     originalPrice: 79900,
     rating: 4.6,
     category: "Mobiles",
-    image: "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/3/5/l/-original-imaghx9qmiqhl2fz.jpeg?q=70",
+    image: "https://placehold.co/600x600/f5f5f5/212121/png?text=iPhone+14&font=roboto",
     images: [
-      "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/3/5/l/-original-imaghx9qmiqhl2fz.jpeg?q=70",
-      "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/a/r/5/-original-imaghx9qjgbn6b2x.jpeg?q=70"
+      "https://placehold.co/600x600/f5f5f5/212121/png?text=iPhone+14&font=roboto",
+      "https://placehold.co/600x600/f5f5f5/212121/png?text=iPhone+14+Side"
     ],
     inStock: true
   },
@@ -22,9 +22,9 @@ const products = [
     originalPrice: 17490,
     rating: 4.2,
     category: "Mobiles",
-    image: "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/z/f/n/-original-imagzjhwaag24zyv.jpeg?q=70",
+    image: "https://placehold.co/600x600/f5f5f5/212121/png?text=Galaxy+F14&font=roboto",
     images: [
-      "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/z/f/n/-original-imagzjhwaag24zyv.jpeg?q=70"
+      "https://placehold.co/600x600/f5f5f5/212121/png?text=Galaxy+F14&font=roboto"
     ],
     inStock: true
   },
@@ -36,9 +36,9 @@ const products = [
     originalPrice: 99900,
     rating: 4.7,
     category: "Electronics",
-    image: "https://rukminim2.flixcart.com/image/312/312/xif0q/television/h/d/w/-original-imagtywq4dchhy8k.jpeg?q=70",
+    image: "https://placehold.co/600x600/f5f5f5/212121/png?text=Sony+TV&font=roboto",
     images: [
-      "https://rukminim2.flixcart.com/image/312/312/xif0q/television/h/d/w/-original-imagtywq4dchhy8k.jpeg?q=70"
+      "https://placehold.co/600x600/f5f5f5/212121/png?text=Sony+TV&font=roboto"
     ],
     inStock: true
   },
@@ -50,9 +50,9 @@ const products = [
     originalPrice: 3999,
     rating: 4.0,
     category: "Fashion",
-    image: "https://rukminim2.flixcart.com/image/612/612/xif0q/shoe/c/n/9/-original-imaggcawzvhh8vzh.jpeg?q=70",
+    image: "https://placehold.co/600x600/f5f5f5/212121/png?text=Puma+Shoes&font=roboto",
     images: [
-      "https://rukminim2.flixcart.com/image/612/612/xif0q/shoe/c/n/9/-original-imaggcawzvhh8vzh.jpeg?q=70"
+      "https://placehold.co/600x600/f5f5f5/212121/png?text=Puma+Shoes&font=roboto"
     ],
     inStock: true
   },
@@ -64,9 +64,9 @@ const products = [
     originalPrice: 59990,
     rating: 4.3,
     category: "Laptops",
-    image: "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/w/p/u/-original-imagg3bxvubszrky.jpeg?q=70",
+    image: "https://placehold.co/600x600/f5f5f5/212121/png?text=Asus+Laptop&font=roboto",
     images: [
-      "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/w/p/u/-original-imagg3bxvubszrky.jpeg?q=70"
+      "https://placehold.co/600x600/f5f5f5/212121/png?text=Asus+Laptop&font=roboto"
     ],
     inStock: true
   }

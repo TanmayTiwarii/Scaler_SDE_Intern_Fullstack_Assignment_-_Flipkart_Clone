@@ -1,19 +1,19 @@
 .navbarWrapper {
-  background-color: #f1f2f4; /* The standard flipkart gray background */
+  background-color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .header {
   background-color: var(--white);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 .topRow {
-  max-width: 1400px;
+  max-width: 1248px;
   margin: 0 auto;
-  padding: 8px 16px 0;
+  padding: 12px 24px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -74,8 +74,8 @@
 }
 
 .locationText {
-  color: #555;
-  font-weight: 500;
+  color: #212121;
+  font-weight: 600;
 }
 
 .locationLink {
@@ -90,9 +90,9 @@
 }
 
 .middleRow {
-  max-width: 1400px;
+  max-width: 1248px;
   margin: 0 auto;
-  padding: 12px 16px;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   gap: 32px;
@@ -102,15 +102,15 @@
   flex: 1;
   display: flex;
   align-items: center;
-  background-color: #f0f5ff;
+  background-color: #ffffff;
+  border: 1px solid #2874f0;
   border-radius: 8px;
   padding: 0;
   height: 40px;
-  transition: background-color 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .searchBar:focus-within {
-  background-color: var(--white);
   box-shadow: 0 0 0 1px #2874f0;
 }
 
@@ -137,15 +137,19 @@
   gap: 28px;
 }
 
-.loginAction {
+.loginAction,
+.moreAction {
   position: relative;
+  display: flex;
+  align-items: center;
+  height: 40px;
 }
 
 .loginBtn {
   display: flex;
   align-items: center;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   color: #212121;
   cursor: pointer;
   padding: 8px 12px;
@@ -153,8 +157,111 @@
   text-decoration: none;
 }
 
-.loginBtn:hover {
-  background-color: #f0f5ff;
+.loginBtn:hover,
+.moreAction:hover .navItem {
+  /* No background highlight on hover matching reference images */
+}
+
+.arrowProps {
+  transition: transform 0.3s ease;
+}
+
+.loginAction:hover .arrowProps,
+.moreAction:hover .arrowProps {
+  transform: rotate(180deg);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  min-width: 280px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 1000;
+  margin-top: 4px;
+}
+
+/* Upward pointing triangle at top of dropdown */
+.dropdownMenu::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #ffffff;
+}
+
+/* Ensure the border of the triangle matches the box (using a pseudo element trick or shadow) */
+.dropdownMenu::after {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 9px solid #e0e0e0;
+  z-index: -1;
+}
+
+.loginAction:hover .dropdownMenu,
+.moreAction:hover .dropdownMenu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.dropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+  color: #212121;
+}
+
+.signupLink {
+  color: #2874f0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signupLink:hover {
+  text-decoration: underline;
+}
+
+.dropdownList {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+.dropdownList li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #212121;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdownList li svg {
+  color: #878787;
+}
+
+.dropdownList li:hover {
+  background-color: #f5f8ff;
 }
 
 .navItem {
@@ -162,15 +269,15 @@
   align-items: center;
   gap: 6px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   color: #212121;
   cursor: pointer;
   text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
 }
 
-.navItem:hover {
-  color: #2874f0;
-}
+
 
 .cartBadge {
   background-color: #ff6a00;
@@ -182,15 +289,26 @@
   margin-left: 2px;
 }
 
+.categoriesWrapper {
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.categoriesWrapper.collapsedRow {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
 .categoriesRow {
-  max-width: 1400px;
+  max-width: 1248px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
-  padding: 12px 16px 0;
+  padding: 4px 24px 4px;
   overflow-x: auto;
   scrollbar-width: none;
-  border-bottom: 1px solid #f0f0f0;
 }
 
 .categoriesRow::-webkit-scrollbar {
@@ -201,11 +319,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
   cursor: pointer;
-  padding: 0 8px 12px;
+  padding: 0 6px 3px;
   min-width: 72px;
-  border-bottom: 3px solid transparent;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  color: inherit;
 }
 
 .categoryItem:hover .catName {
@@ -213,21 +332,69 @@
 }
 
 .activeCategory {
-  border-bottom-color: #2874f0;
+  border-bottom: 3px solid #2874f0;
+}
+
+.activeCategory .catIcon {
+  background: linear-gradient(to bottom, rgba(40, 116, 240, 0.18), rgba(40, 116, 240, 0.05));
+  border-radius: 6px;
 }
 
 .activeCategory .catName {
-  color: #2874f0;
-  font-weight: 600;
+  color: #212121;
+  font-weight: 700;
+}
+
+.collapsedRow .catIcon {
+  animation: popOut 0.3s ease forwards;
+}
+
+.expandedRow .catIcon {
+  animation: popIn 0.3s ease forwards;
 }
 
 .catIcon {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  margin-bottom: 0px;
+}
+
+@keyframes popOut {
+  0% {
+    transform: scale(1);
+    height: 48px;
+    margin-bottom: 0px;
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.5);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0);
+    height: 0px;
+    margin-bottom: 0px;
+    opacity: 0;
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    height: 0px;
+    margin-bottom: 0px;
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    height: 48px;
+    margin-bottom: 0px;
+    opacity: 1;
+  }
 }
 
 .catImage {

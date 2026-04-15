@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
+import ProductSkeleton from '../components/ProductSkeleton';
 import styles from './Home.module.css';
 import { ArrowRight } from 'lucide-react';
 
 const Home = () => {
+  const { slug } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/products');
+        setLoading(true);
+        const url = slug 
+          ? `/products?category=${slug}`
+          : '/products';
+          
+        const [response] = await Promise.all([
+          api.get(url),
+          new Promise(resolve => setTimeout(resolve, 800)) // Force minimum loading time
+        ]);
+        
         setProducts(response.data.products);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -21,7 +34,11 @@ const Home = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [slug]);
+
+  const categoryTitle = slug 
+    ? slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+    : 'Suggested For You';
 
   return (
     <div className={`container ${styles.homeContainer}`}>
@@ -60,14 +77,18 @@ const Home = () => {
       
       {/* Product Section */}
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Suggested For You</h2>
+        <h2 className={styles.sectionTitle}>{categoryTitle}</h2>
         <div className={styles.arrowCircle}>
           <ArrowRight color="white" size={16} strokeWidth={3} />
         </div>
       </div>
       
       {loading ? (
-        <p>Loading products...</p>
+        <div className={styles.productGrid}>
+          {Array.from({ length: 12 }).map((_, index) => (
+            <ProductSkeleton key={`skeleton-${index}`} />
+          ))}
+        </div>
       ) : (
         <div className={styles.productGrid}>
           {/* Mapping exact mock images similar to the supplied image for a "Suggested For You" clothing section */}

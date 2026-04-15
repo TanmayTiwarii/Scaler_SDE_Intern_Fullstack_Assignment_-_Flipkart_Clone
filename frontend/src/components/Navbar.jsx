@@ -1,30 +1,72 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, ChevronDown, User } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Search, ShoppingCart, ChevronDown, User, Heart, Package, Star, Store, Gift, Bell, HeadphonesIcon, TrendingUp, Download, UserCircle, CreditCard, LogOut } from 'lucide-react';
 import styles from './Navbar.module.css';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const { cartItems } = useCart();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const collapsedState = useRef(false);
+  const isTransitioning = useRef(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (isTransitioning.current) {
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+      
+      if (Math.abs(currentScrollY - lastScrollY.current) < 20) return;
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 50 && !collapsedState.current) {
+        collapsedState.current = true;
+        setIsCollapsed(true);
+        isTransitioning.current = true;
+        setTimeout(() => isTransitioning.current = false, 500);
+      } else if (currentScrollY < lastScrollY.current && collapsedState.current) {
+        collapsedState.current = false;
+        setIsCollapsed(false);
+        isTransitioning.current = true;
+        setTimeout(() => isTransitioning.current = false, 500);
+      }
+      
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const categories = [
-    { name: 'For You', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/all.svg' },
-    { name: 'Fashion', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/0d75b34f7d8fbcb3.png?q=100' },
-    { name: 'Mobiles', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/22fddf3c7da4c4f4.png?q=100' },
-    { name: 'Beauty', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/d30ca78dc0ee8af9.png?q=100' },
-    { name: 'Electronics', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/69c6589653afdb9a.png?q=100' },
-    { name: 'Home', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/ab7e2b022a4587dd.jpg?q=100' },
-    { name: 'Appliances', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/0f39ac250ce733cf.png?q=100' },
-    { name: 'Toys, ba...', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/d154c0b4d536c1cf.png?q=100' },
-    { name: 'Food & H...', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/71050627a56b4693.png?q=100' },
-    { name: 'Auto Acc...', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/d30ca78dc0ee8af9.png?q=100' },
-    { name: '2 Wheele...', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/0f39ac250ce733cf.png?q=100' },
-    { name: 'Sports & ...', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/d154c0b4d536c1cf.png?q=100' },
-    { name: 'Books & ...', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/ab7e2b022a4587dd.jpg?q=100' },
-    { name: 'Furniture', image: 'https://rukminim1.flixcart.com/fk-p-flap/80/80/image/0d75b34f7d8fbcb3.png?q=100' },
+    { name: 'For You', slug: '', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/all.svg' },
+    { name: 'Fashion', slug: 'fashion', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/fashion.svg' },
+    { name: 'Mobiles', slug: 'mobiles', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/mobiles.svg' },
+    { name: 'Beauty', slug: 'beauty', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/beauty.svg' },
+    { name: 'Electronics', slug: 'electronics', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/electronics.svg' },
+    { name: 'Home', slug: 'home-kitchen', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/home-final.svg' },
+    { name: 'Appliances', slug: 'appliances', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/tv.svg' },
+    { name: 'Toys, ba...', slug: 'toys', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/toy.svg' },
+    { name: 'Food & H...', slug: 'food-health', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/food.svg' },
+    { name: 'Auto Acc...', slug: 'auto-accessories', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/auto-acc.svg' },
+    { name: '2 Wheele...', slug: '2-wheelers', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/auto-new.svg' },
+    { name: 'Sports & ...', slug: 'sports', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/sport.svg' },
+    { name: 'Books & ...', slug: 'books', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/books.svg' },
+    { name: 'Furniture', slug: 'furniture', image: 'https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/furniture.svg' },
   ];
 
   return (
@@ -112,17 +154,57 @@ const Navbar = () => {
 
           <div className={styles.navActions}>
             <div className={styles.loginAction}>
-              <Link to="/login" className={styles.loginBtn}>
-                <User size={20} /> <span style={{marginLeft: "4px"}}>Login</span> <ChevronDown size={16} style={{marginLeft: "4px"}} />
-              </Link>
+              {user ? (
+                <div className={styles.loginBtn}>
+                  <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/profile-6bae67.svg" width="24" height="24" alt="Account" />
+                  <span style={{marginLeft: "4px"}}>Account</span>
+                  <ChevronDown size={16} style={{marginLeft: "4px"}} className={styles.arrowProps} />
+                </div>
+              ) : (
+                <Link to="/login" className={styles.loginBtn}>
+                  <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/profile-6bae67.svg" width="24" height="24" alt="Login" />
+                  <span style={{marginLeft: "4px"}}>Login</span>
+                  <ChevronDown size={16} style={{marginLeft: "4px"}} className={styles.arrowProps} />
+                </Link>
+              )}
+              
+              <div className={styles.dropdownMenu}>
+                {!user && (
+                   <div className={styles.dropdownHeader}>
+                     <span>New customer?</span>
+                     <Link to="/signup" className={styles.signupLink}>Sign Up</Link>
+                   </div>
+                )}
+                <ul className={styles.dropdownList}>
+                  <li><UserCircle size={18} /> My Profile</li>
+                  <li><Star size={18} /> Flipkart Plus Zone</li>
+                  <Link to="/orders" style={{ textDecoration: 'none', color: 'inherit' }}><li><Package size={18} /> Orders</li></Link>
+                  <li><Heart size={18} /> Wishlist</li>
+                  <li><Store size={18} /> Become a Seller</li>
+                  <li><Gift size={18} /> Rewards</li>
+                  <li><CreditCard size={18} /> Gift Cards</li>
+                  {user && <li onClick={handleLogout} style={{ cursor: 'pointer' }}><LogOut size={18} /> Logout</li>}
+                </ul>
+              </div>
             </div>
 
-            <div className={styles.navItem}>
-              <span>More</span> <ChevronDown size={16} />
+            <div className={styles.moreAction}>
+              <div className={styles.navItem}>
+                <span>More</span> <ChevronDown size={16} className={styles.arrowProps} />
+              </div>
+              
+              <div className={styles.dropdownMenu}>
+                <ul className={styles.dropdownList}>
+                  <li><Store size={18} /> Become a Seller</li>
+                  <li><Bell size={18} /> Notification Settings</li>
+                  <li><HeadphonesIcon size={18} /> 24x7 Customer Care</li>
+                  <li><TrendingUp size={18} /> Advertise on Flipkart</li>
+                </ul>
+              </div>
             </div>
 
             <Link to="/cart" className={styles.navItem}>
-              <ShoppingCart size={20} />
+              <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/header_cart_v4-6ac9a8.svg" alt="Cart" width="24" height="24" />
               <span>Cart</span>
               {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
             </Link>
@@ -130,15 +212,26 @@ const Navbar = () => {
         </div>
 
         {/* Bottom Row - Categories */}
-        <div className={styles.categoriesRow}>
-          {categories.map((cat, idx) => (
-            <div key={idx} className={`${styles.categoryItem} ${cat.name === 'For You' ? styles.activeCategory : ''}`}>
-              <div className={styles.catIcon}>
-                <img src={cat.image} alt={cat.name} className={styles.catImage} style={cat.name === 'For You' ? { width: '36px', height: '36px' } : undefined} />
-              </div>
-              <div className={styles.catName}>{cat.name}</div>
-            </div>
-          ))}
+        <div className={`${styles.categoriesWrapper} ${isCollapsed ? styles.collapsedRow : styles.expandedRow}`}>
+          <div className={styles.categoriesRow}>
+          {categories.map((cat, idx) => {
+            const isActive = cat.slug === '' 
+              ? location.pathname === '/' 
+              : location.pathname === `/category/${cat.slug}`;
+            return (
+              <Link 
+                key={idx} 
+                to={cat.slug === '' ? '/' : `/category/${cat.slug}`}
+                className={`${styles.categoryItem} ${isActive ? styles.activeCategory : ''}`}
+              >
+                <div className={styles.catIcon}>
+                  <img src={cat.image} alt={cat.name} className={styles.catImage} style={cat.image.endsWith('.svg') ? { width: '36px', height: '36px' } : undefined} />
+                </div>
+                <div className={styles.catName}>{cat.name}</div>
+              </Link>
+            );
+          })}
+          </div>
         </div>
       </header>
     </div>

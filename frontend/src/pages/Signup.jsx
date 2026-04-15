@@ -1,19 +1,20 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 import styles from './Auth.module.css';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/auth/signup', {
+      const res = await api.post('/auth/signup', {
         name: e.target.name.value,
         email: e.target.email.value,
         password: e.target.password.value
       });
+      login(res.data.token, res.data.user);
       navigate('/');
     } catch (error) {
       console.error('Signup error', error);

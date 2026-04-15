@@ -64,3 +64,13 @@ CREATE TABLE order_items (
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     price_at_purchase NUMERIC(10, 2) NOT NULL
 );
+-- 7. Cart Table
+-- Normalization: Persists cart items per user.
+CREATE TABLE cart_items (
+    id SERIAL PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    quantity INTEGER NOT NULL DEFAULT 1 CHECK (quantity > 0),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, product_id)
+);

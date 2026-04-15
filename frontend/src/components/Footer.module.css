@@ -1,0 +1,120 @@
+.footer {
+  background-color: rgb(33, 33, 33);
+  color: #fff;
+  font-family: Roboto, Arial, sans-serif;
+  margin-top: 40px;
+}
+
+.container {
+  max-width: 1248px;
+  margin: 0 auto;
+}
+
+.topSection {
+  display: flex;
+  padding: 40px 0;
+}
+
+.linksGrid {
+  display: flex;
+  flex: 1.5;
+  justify-content: space-between;
+  padding-right: 30px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.colHeading {
+  color: #878787;
+  font-size: 12px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.link {
+  color: #fff;
+  font-size: 12px;
+  text-decoration: none;
+  line-height: 1.5;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.addressGrid {
+  display: flex;
+  flex: 1;
+  border-left: 1px solid #454d5e;
+  padding-left: 30px;
+  justify-content: space-between;
+}
+
+.addressCol {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.addressText {
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.phoneLink {
+  color: #2874f0;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.socialRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.socialIcon {
+  color: #fff;
+  width: 20px;
+  height: 20px;
+}
+
+.bottomBar {
+  border-top: 1px solid #454d5e;
+  padding: 25px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bottomItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.bottomItemIcon {
+  color: #ffc200;
+}
+
+.copyright {
+  font-size: 14px;
+  color: #fff;
+}
+
+.paymentMethods {
+  display: flex;
+  gap: 8px;
+}
+
+.paymentIcon {
+  height: 20px;
+}

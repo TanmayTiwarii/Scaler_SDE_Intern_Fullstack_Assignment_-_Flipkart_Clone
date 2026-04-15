@@ -1,0 +1,213 @@
+.ordersPage {
+  background-color: var(--bg-color);
+  padding: 20px 0;
+  min-height: calc(100vh - 64px);
+  font-family: 'Inter', sans-serif;
+}
+
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.breadcrumbs {
+  font-size: 13px;
+  color: #878787;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 8px;
+}
+
+.layout {
+  display: flex;
+  gap: 16px;
+}
+
+/* Sidebar Filters */
+.sidebar {
+  width: 280px;
+  background: var(--white);
+  border-radius: 2px;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.08);
+  height: fit-content;
+  padding: 16px;
+}
+
+.sidebarTitle {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 24px;
+  color: #212121;
+}
+
+.filterSection {
+  margin-bottom: 24px;
+}
+
+.filterHeader {
+  font-size: 13px;
+  font-weight: 500;
+  color: #212121;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  letter-spacing: .3px;
+}
+
+.filterOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #212121;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #c2c2c2;
+  border-radius: 2px;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+}
+
+.searchContainer {
+  display: flex;
+  margin-bottom: 16px;
+  height: 40px;
+}
+
+.searchInput {
+  flex: 1;
+  border: 1px solid #e0e0e0;
+  border-right: none;
+  padding: 0 16px;
+  font-size: 14px;
+  outline: none;
+  border-radius: 2px 0 0 2px;
+}
+
+.searchBtn {
+  background-color: #2874f0;
+  color: var(--white);
+  padding: 0 24px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 0 2px 2px 0;
+}
+
+/* Order Cards */
+.orderCard {
+  background: var(--white);
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  padding: 16px 24px;
+  display: flex;
+  margin-bottom: 16px;
+  transition: box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.orderCard:hover {
+  box-shadow: 0 4px 12px 0 rgba(0,0,0,.15);
+}
+
+.itemImage {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  margin-right: 24px;
+}
+
+.itemInfo {
+  flex: 1;
+  max-width: 400px;
+}
+
+.itemTitle {
+  font-size: 14px;
+  color: #212121;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemMeta {
+  font-size: 12px;
+  color: #878787;
+}
+
+.itemPrice {
+  width: 120px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #212121;
+}
+
+.orderStatus {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.statusLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: #26a541;
+  border-radius: 50%;
+}
+
+.statusSub {
+  font-size: 12px;
+  color: #212121;
+  margin-bottom: 16px;
+}
+
+.rateAction {
+  color: #2874f0;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 32px;
+  padding-bottom: 40px;
+}
+
+.endBtn {
+  background: var(--white);
+  border: 1px solid #e0e0e0;
+  padding: 12px 32px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2874f0;
+  border-radius: 2px;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+}

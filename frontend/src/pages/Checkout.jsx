@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import styles from './Checkout.module.css';
 
 const Checkout = () => {
   const { cartItems, getCartTotal, clearCart } = useCart();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
+  
   const [address, setAddress] = useState({
     name: '',
     phone: '',
@@ -16,6 +17,13 @@ const Checkout = () => {
     city: '',
     state: ''
   });
+
+  if (loading) return <div>Loading...</div>;
+
+  if (!user) {
+    navigate('/login?redirect=checkout');
+    return null;
+  }
 
   if (cartItems.length === 0) {
     navigate('/cart');
@@ -29,7 +37,7 @@ const Checkout = () => {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     try {
-      const resp = await axios.post('http://localhost:5000/api/orders', {
+      const resp = await api.post('/orders', {
         items: cartItems,
         shippingAddress: address,
         total: getCartTotal()
