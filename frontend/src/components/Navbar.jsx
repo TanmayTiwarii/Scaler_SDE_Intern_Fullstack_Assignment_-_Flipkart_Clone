@@ -135,7 +135,7 @@ const Navbar = () => {
             </Link>
           </div>
           
-          <div className={styles.location}>
+          <div className={styles.location} onClick={() => navigate(user ? '/checkout' : '/login')} style={{ cursor: 'pointer' }}>
             <MapPin size={16} color="#2874f0" />
             <span className={styles.locationText}>Location not set</span>
             <span className={styles.locationLink}>Select delivery location {'>'}</span>

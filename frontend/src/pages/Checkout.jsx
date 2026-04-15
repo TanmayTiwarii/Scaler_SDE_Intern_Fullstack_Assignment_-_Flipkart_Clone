@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { MapPin, Plus, Check, ShieldCheck, Truck, CreditCard, Package } from 'lucide-react';
 import api from '../utils/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -9,136 +10,261 @@ const Checkout = () => {
   const { cartItems, getCartTotal, clearCart } = useCart();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  
-  const [address, setAddress] = useState({
-    name: '',
-    phone: '',
-    pincode: '',
-    locality: '',
-    addressLine: '',
-    city: '',
-    state: ''
+
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
+  const [placingOrder, setPlacingOrder] = useState(false);
+
+  const [form, setForm] = useState({
+    name: '', phone: '', pincode: '', locality: '',
+    addressLine: '', city: '', state: '', addressType: 'HOME'
   });
 
-  if (loading) return <div>Loading...</div>;
+  useEffect(() => {
+    if (!loading && !user) { navigate('/login?redirect=checkout'); return; }
+    if (user) fetchAddresses();
+  }, [user, loading]);
 
-  if (!user) {
-    navigate('/login?redirect=checkout');
-    return null;
-  }
-
-  if (cartItems.length === 0) {
-    navigate('/cart');
-    return null;
-  }
-
-  const handleInputChange = (e) => {
-    setAddress({ ...address, [e.target.name]: e.target.value });
+  const fetchAddresses = async () => {
+    try {
+      const res = await api.get('/addresses');
+      setAddresses(res.data.addresses);
+      const def = res.data.addresses.find(a => a.is_default);
+      if (def) setSelectedAddressId(def.id);
+      else if (res.data.addresses.length > 0) setSelectedAddressId(res.data.addresses[0].id);
+      if (res.data.addresses.length === 0) setShowForm(true);
+    } catch (err) { console.error('Error fetching addresses', err); }
+    finally { setLoadingAddresses(false); }
   };
 
-  const handlePlaceOrder = async (e) => {
+  const handleFormChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSaveAddress = async (e) => {
     e.preventDefault();
     try {
-      const resp = await api.post('/orders', {
-        items: cartItems,
-        shippingAddress: address,
-        total: getCartTotal()
-      });
-      clearCart();
-      navigate(`/order-confirmation/${resp.data.order.id}`);
-    } catch (error) {
-      console.error('Error placing order', error);
-      alert('Failed to place order. Please try again.');
-    }
+      const res = await api.post('/addresses', form);
+      setAddresses([...addresses, res.data.address]);
+      setSelectedAddressId(res.data.address.id);
+      setShowForm(false);
+      setForm({ name: '', phone: '', pincode: '', locality: '', addressLine: '', city: '', state: '', addressType: 'HOME' });
+    } catch (err) { console.error('Error saving address', err); alert('Failed to save address'); }
   };
 
+  const handlePlaceOrder = async () => {
+    const selectedAddress = addresses.find(a => a.id === selectedAddressId);
+    if (!selectedAddress) { alert('Please select a delivery address'); return; }
+    try {
+      setPlacingOrder(true);
+      await api.post('/orders', { items: cartItems, shippingAddress: selectedAddress, total: getCartTotal() });
+      clearCart();
+      navigate('/orders');
+    } catch (error) { console.error('Error placing order', error); alert('Failed to place order.'); }
+    finally { setPlacingOrder(false); }
+  };
+
+  if (loading || loadingAddresses) return (
+    <div className={styles.loadingPage}>
+      <div className={styles.spinner}></div>
+      <span>Loading checkout...</span>
+    </div>
+  );
+  if (!user) return null;
+  if (cartItems.length === 0) { navigate('/cart'); return null; }
+
+  const discount = cartItems.reduce((t, i) => t + ((i.originalPrice || i.price) - i.price) * i.quantity, 0);
+  const totalOriginal = cartItems.reduce((t, i) => t + (i.originalPrice || i.price) * i.quantity, 0);
+
   return (
-    <div className={styles.checkoutContainer}>
-      <div className={styles.mainColumn}>
-        <div className={styles.stepBox}>
-          <div className={styles.stepHeader}>
-            <span className={styles.stepNumber}>1</span>
-            DELIVERY ADDRESS
+    <div className={styles.checkoutPage}>
+      {/* Checkout Header */}
+      <div className={styles.checkoutBanner}>
+        <div className={styles.bannerInner}>
+          <div className={styles.bannerSteps}>
+            <div className={`${styles.bannerStep} ${styles.bannerStepActive}`}><span>1</span> ADDRESS</div>
+            <div className={styles.bannerDivider}></div>
+            <div className={styles.bannerStep}><span>2</span> ORDER SUMMARY</div>
+            <div className={styles.bannerDivider}></div>
+            <div className={styles.bannerStep}><span>3</span> PAYMENT</div>
           </div>
-          <div className={styles.stepContent}>
-            <form onSubmit={handlePlaceOrder}>
-              <div className={styles.row}>
-                <div className={styles.col}>
-                  <div className={styles.formGroup}>
-                    <input required type="text" name="name" placeholder="Name" className={styles.input} onChange={handleInputChange} />
-                  </div>
-                </div>
-                <div className={styles.col}>
-                  <div className={styles.formGroup}>
-                    <input required type="tel" name="phone" placeholder="10-digit mobile number" className={styles.input} onChange={handleInputChange} />
-                  </div>
-                </div>
-              </div>
-              <div className={styles.row}>
-                <div className={styles.col}>
-                  <div className={styles.formGroup}>
-                    <input required type="text" name="pincode" placeholder="Pincode" className={styles.input} onChange={handleInputChange} />
-                  </div>
-                </div>
-                <div className={styles.col}>
-                  <div className={styles.formGroup}>
-                    <input required type="text" name="locality" placeholder="Locality" className={styles.input} onChange={handleInputChange} />
-                  </div>
-                </div>
-              </div>
-              <div className={styles.formGroup}>
-                <textarea required name="addressLine" placeholder="Address (Area and Street)" className={styles.input} rows="3" onChange={handleInputChange}></textarea>
-              </div>
-              <div className={styles.row}>
-                <div className={styles.col}>
-                  <div className={styles.formGroup}>
-                    <input required type="text" name="city" placeholder="City/District/Town" className={styles.input} onChange={handleInputChange} />
-                  </div>
-                </div>
-                <div className={styles.col}>
-                  <div className={styles.formGroup}>
-                    <input required type="text" name="state" placeholder="State" className={styles.input} onChange={handleInputChange} />
-                  </div>
-                </div>
-              </div>
-              
-              <button type="submit" className="btn btn-primary" style={{ padding: '16px 32px', marginTop: '16px' }}>
-                SAVE AND DELIVER HERE
-              </button>
-            </form>
-          </div>
-        </div>
-        
-        <div className={styles.stepBox}>
-          <div className={styles.stepHeader} style={{ background: '#fff', color: '#878787' }}>
-            <span className={styles.stepNumber} style={{ background: '#f0f0f0', color: '#878787' }}>2</span>
-            ORDER SUMMARY
-          </div>
-        </div>
-        
-        <div className={styles.stepBox}>
-          <div className={styles.stepHeader} style={{ background: '#fff', color: '#878787' }}>
-            <span className={styles.stepNumber} style={{ background: '#f0f0f0', color: '#878787' }}>3</span>
-            PAYMENT OPTIONS
+          <div className={styles.bannerSecure}>
+            <ShieldCheck size={18} /> 100% Secure
           </div>
         </div>
       </div>
-      
-      <div style={{ width: '300px' }}>
-        <div style={{ background: '#fff', padding: '16px', borderRadius: '2px', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.1)' }}>
-          <div style={{ borderBottom: '1px solid #f0f0f0', paddingBottom: '12px', marginBottom: '12px', fontWeight: '500', color: '#878787' }}>PRICE DETAILS</div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span>Price ({cartItems.length} items)</span>
-            <span>₹{getCartTotal().toLocaleString('en-IN')}</span>
+
+      <div className={styles.checkoutContainer}>
+        {/* Left Column */}
+        <div className={styles.leftColumn}>
+
+          {/* Step 1: Delivery Address */}
+          <div className={styles.stepBox}>
+            <div className={styles.stepHeader}>
+              <span className={styles.stepNumber}>1</span>
+              DELIVERY ADDRESS
+            </div>
+            <div className={styles.stepContent}>
+              {addresses.map(addr => (
+                <div key={addr.id}
+                  className={`${styles.addressCard} ${selectedAddressId === addr.id ? styles.addressCardSelected : ''}`}
+                  onClick={() => setSelectedAddressId(addr.id)}
+                >
+                  <div className={styles.addressRadio}>
+                    <div className={`${styles.radio} ${selectedAddressId === addr.id ? styles.radioActive : ''}`}>
+                      {selectedAddressId === addr.id && <div className={styles.radioDot}></div>}
+                    </div>
+                  </div>
+                  <div className={styles.addressInfo}>
+                    <div className={styles.addressHead}>
+                      <span className={styles.addressName}>{addr.name}</span>
+                      <span className={styles.addressTag}>{addr.address_type}</span>
+                      <span className={styles.addressPhone}>{addr.phone}</span>
+                    </div>
+                    <p className={styles.addressText}>
+                      {addr.address_line}, {addr.locality && `${addr.locality}, `}{addr.city}, {addr.state} - <strong>{addr.pincode}</strong>
+                    </p>
+                    {selectedAddressId === addr.id && (
+                      <button className={styles.deliverHereBtn} onClick={(e) => e.stopPropagation()}>
+                        DELIVER HERE
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {!showForm ? (
+                <button className={styles.addNewBtn} onClick={() => setShowForm(true)}>
+                  <Plus size={18} strokeWidth={2.5} /> Add a new address
+                </button>
+              ) : (
+                <div className={styles.addressForm}>
+                  <h3 className={styles.formTitle}><MapPin size={16} /> ADD A NEW ADDRESS</h3>
+                  <form onSubmit={handleSaveAddress}>
+                    <div className={styles.formRow}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Name *</label>
+                        <input required type="text" name="name" placeholder="Full Name" value={form.name} onChange={handleFormChange} className={styles.formInput} />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Mobile *</label>
+                        <input required type="tel" name="phone" placeholder="10-digit mobile number" value={form.phone} onChange={handleFormChange} className={styles.formInput} />
+                      </div>
+                    </div>
+                    <div className={styles.formRow}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Pincode *</label>
+                        <input required type="text" name="pincode" placeholder="6-digit pincode" value={form.pincode} onChange={handleFormChange} className={styles.formInput} />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Locality</label>
+                        <input type="text" name="locality" placeholder="Locality / Area" value={form.locality} onChange={handleFormChange} className={styles.formInput} />
+                      </div>
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.formLabel}>Address *</label>
+                      <textarea required name="addressLine" placeholder="House No., Building, Street, Area" value={form.addressLine} onChange={handleFormChange} className={styles.formTextarea} rows="3" />
+                    </div>
+                    <div className={styles.formRow}>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>City *</label>
+                        <input required type="text" name="city" placeholder="City/District/Town" value={form.city} onChange={handleFormChange} className={styles.formInput} />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>State *</label>
+                        <input required type="text" name="state" placeholder="State" value={form.state} onChange={handleFormChange} className={styles.formInput} />
+                      </div>
+                    </div>
+                    <div className={styles.typeRow}>
+                      <span className={styles.typeTitle}>Address Type</span>
+                      <label className={`${styles.typeLabel} ${form.addressType === 'HOME' ? styles.typeLabelActive : ''}`}>
+                        <input type="radio" name="addressType" value="HOME" checked={form.addressType === 'HOME'} onChange={handleFormChange} /> Home
+                      </label>
+                      <label className={`${styles.typeLabel} ${form.addressType === 'WORK' ? styles.typeLabelActive : ''}`}>
+                        <input type="radio" name="addressType" value="WORK" checked={form.addressType === 'WORK'} onChange={handleFormChange} /> Work
+                      </label>
+                    </div>
+                    <div className={styles.formActions}>
+                      <button type="submit" className={styles.saveBtn}>SAVE AND DELIVER HERE</button>
+                      <button type="button" className={styles.cancelBtn} onClick={() => setShowForm(false)}>CANCEL</button>
+                    </div>
+                  </form>
+                </div>
+              )}
+            </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span>Delivery Charges</span>
-            <span style={{ color: '#388e3c' }}>FREE</span>
+
+          {/* Step 2: Order Summary */}
+          <div className={styles.stepBox}>
+            <div className={styles.stepHeaderInactive}>
+              <span className={styles.stepNumberInactive}>2</span>
+              ORDER SUMMARY
+              <span className={styles.stepItemCount}>{cartItems.length} item{cartItems.length > 1 ? 's' : ''}</span>
+            </div>
+            <div className={styles.orderPreview}>
+              {cartItems.slice(0, 3).map(item => (
+                <div key={item.id} className={styles.previewItem}>
+                  <img src={item.image} alt={item.title} className={styles.previewImg} />
+                </div>
+              ))}
+              {cartItems.length > 3 && (
+                <div className={styles.previewMore}>+{cartItems.length - 3}</div>
+              )}
+            </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px 0', borderTop: '1px dashed #e0e0e0', fontWeight: '600', fontSize: '18px' }}>
-            <span>Amount Payable</span>
-            <span>₹{getCartTotal().toLocaleString('en-IN')}</span>
+
+          {/* Step 3: Payment */}
+          <div className={styles.stepBox}>
+            <div className={styles.stepHeaderInactive}>
+              <span className={styles.stepNumberInactive}>3</span>
+              PAYMENT OPTIONS
+            </div>
           </div>
+        </div>
+
+        {/* Right Column */}
+        <div className={styles.rightColumn}>
+          <div className={styles.priceCard}>
+            <div className={styles.priceHeader}>PRICE DETAILS</div>
+            <div className={styles.priceRow}>
+              <span>Price ({cartItems.length} item{cartItems.length > 1 ? 's' : ''})</span>
+              <span>₹{totalOriginal.toLocaleString('en-IN')}</span>
+            </div>
+            <div className={styles.priceRow}>
+              <span>Delivery Charges</span>
+              <span className={styles.freeText}>FREE</span>
+            </div>
+            {discount > 0 && (
+              <div className={styles.priceRow}>
+                <span>Discount</span>
+                <span className={styles.discountText}>− ₹{discount.toLocaleString('en-IN')}</span>
+              </div>
+            )}
+            <div className={styles.totalRow}>
+              <span>Total Amount</span>
+              <span>₹{getCartTotal().toLocaleString('en-IN')}</span>
+            </div>
+            {discount > 0 && (
+              <div className={styles.savingsText}>
+                You will save ₹{discount.toLocaleString('en-IN')} on this order
+              </div>
+            )}
+          </div>
+
+          {/* Trust Badges */}
+          <div className={styles.trustRow}>
+            <div className={styles.trustItem}><ShieldCheck size={20} /> <span>Safe & Secure</span></div>
+            <div className={styles.trustItem}><Truck size={20} /> <span>Free Delivery</span></div>
+            <div className={styles.trustItem}><Package size={20} /> <span>Easy Returns</span></div>
+          </div>
+
+          <button
+            className={styles.placeOrderBtn}
+            onClick={handlePlaceOrder}
+            disabled={!selectedAddressId || placingOrder}
+          >
+            {placingOrder ? 'Placing Order...' : 'PLACE ORDER'}
+          </button>
         </div>
       </div>
     </div>

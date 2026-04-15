@@ -74,3 +74,20 @@ CREATE TABLE cart_items (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, product_id)
 );
+
+-- 8. Addresses Table
+-- Stores delivery addresses per user.
+CREATE TABLE addresses (
+    id SERIAL PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    pincode VARCHAR(10) NOT NULL,
+    locality VARCHAR(255),
+    address_line TEXT NOT NULL,
+    city VARCHAR(255) NOT NULL,
+    state VARCHAR(255) NOT NULL,
+    address_type VARCHAR(20) DEFAULT 'HOME',
+    is_default BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
