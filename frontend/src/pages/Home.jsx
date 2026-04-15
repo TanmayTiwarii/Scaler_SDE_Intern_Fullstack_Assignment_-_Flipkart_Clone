@@ -16,15 +16,20 @@ const Home = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const url = slug 
-          ? `/products?category=${slug}`
-          : '/products';
-          
+        
+        const params = {};
+        if (slug) {
+          params.category = slug;
+        }
+
+        console.log('Fetching products with slug:', slug, 'params:', params);
+        
         const [response] = await Promise.all([
-          api.get(url),
-          new Promise(resolve => setTimeout(resolve, 800)) // Force minimum loading time
+          api.get('/products', { params }),
+          new Promise(resolve => setTimeout(resolve, 800))
         ]);
         
+        console.log('Products received:', response.data.products.length);
         setProducts(response.data.products);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -91,19 +96,6 @@ const Home = () => {
         </div>
       ) : (
         <div className={styles.productGrid}>
-          {/* Mapping exact mock images similar to the supplied image for a "Suggested For You" clothing section */}
-          {[
-            "https://rukminim1.flixcart.com/image/612/612/xif0q/shirt/r/k/t/m-st10-vebnor-original-imagpw2ytpzv3z5x.jpeg?q=70",
-            "https://rukminim1.flixcart.com/image/612/612/xif0q/track-suit/y/7/f/xl-ts13-vebnor-original-imags3y7u4ztuzgx.jpeg?q=70",
-            "https://rukminim1.flixcart.com/image/612/612/xif0q/t-shirt/j/t/a/m-t84-vebnor-original-imagrtqzxg2qszv7.jpeg?q=70",
-            "https://rukminim1.flixcart.com/image/612/612/xif0q/t-shirt/9/b/h/l-half-tshirt-with-shorts-vebnor-original-imags3n6vbg3fhm3.jpeg?q=70",
-            "https://rukminim1.flixcart.com/image/612/612/xif0q/t-shirt/u/v/v/m-t92-vebnor-original-imagrtqzugqy8w2v.jpeg?q=70",
-            "https://rukminim1.flixcart.com/image/612/612/xif0q/track-suit/7/m/m/l-ts15-vebnor-original-imagrqn7hwfzxhtr.jpeg?q=70"
-          ].map((mockImg, index) => (
-             <div key={`mock-${index}`} className={styles.mockProductCard}>
-                 <img src={mockImg} alt="clothing" className={styles.mockProductImage} />
-             </div>
-          ))}
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

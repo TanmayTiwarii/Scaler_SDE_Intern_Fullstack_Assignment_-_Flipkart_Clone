@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -10,8 +10,15 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Orders from './pages/Orders';
 import OrderConfirmation from './pages/OrderConfirmation';
+import SearchResults from './pages/SearchResults';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+
+// Wrapper that forces Home to remount on slug change
+function HomeWrapper() {
+  const { slug } = useParams();
+  return <Home key={slug} />;
+}
 
 function App() {
   return (
@@ -22,8 +29,9 @@ function App() {
             <Navbar />
             <main className="main-content">
               <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/category/:slug" element={<Home />} />
+                <Route path="/" element={<Home key="home" />} />
+                <Route path="/category/:slug" element={<HomeWrapper />} />
+                <Route path="/search" element={<SearchResults />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />

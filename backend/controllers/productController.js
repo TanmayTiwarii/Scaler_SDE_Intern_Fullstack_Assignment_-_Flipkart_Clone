@@ -1,5 +1,23 @@
 const supabase = require('../config/supabase');
 
+// Map URL slugs to actual database category names
+const slugToCategoryName = {
+  'fashion': 'Fashion',
+  'mobiles': 'Mobiles',
+  'beauty': 'Beauty',
+  'electronics': 'Electronics',
+  'home-kitchen': 'Home',
+  'appliances': 'Appliances',
+  'toys': 'Toys',
+  'food-health': 'Food & Health',
+  'auto-accessories': 'Auto Accessories',
+  '2-wheelers': '2 Wheelers',
+  'sports': 'Sports',
+  'books': 'Books',
+  'furniture': 'Furniture',
+  'laptops': 'Laptops'
+};
+
 exports.getProducts = async (req, res) => {
   try {
     const { search, category } = req.query;
@@ -13,7 +31,21 @@ exports.getProducts = async (req, res) => {
       `);
 
     if (category) {
-      query = query.eq('categories.name', category);
+      // Convert slug to actual category name
+      const categoryName = slugToCategoryName[category.toLowerCase()] || category;
+
+      // Find the category ID by its real name
+      const { data: catData } = await supabase
+        .from('categories')
+        .select('id')
+        .ilike('name', categoryName)
+        .single();
+      
+      if (catData) {
+        query = query.eq('category_id', catData.id);
+      } else {
+        return res.json({ products: [] });
+      }
     }
 
     if (search) {

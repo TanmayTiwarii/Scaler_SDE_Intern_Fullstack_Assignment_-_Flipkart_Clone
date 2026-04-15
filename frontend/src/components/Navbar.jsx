@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, ShoppingCart, ChevronDown, User, Heart, Package, Star, Store, Gift, Bell, HeadphonesIcon, TrendingUp, Download, UserCircle, CreditCard, LogOut } from 'lucide-react';
+import { Search, ShoppingCart, ChevronDown, User, Heart, Package, Star, Store, Gift, Bell, HeadphonesIcon, TrendingUp, Download, UserCircle, CreditCard, LogOut, MapPin } from 'lucide-react';
 import styles from './Navbar.module.css';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -11,6 +11,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const collapsedState = useRef(false);
   const isTransitioning = useRef(false);
   const lastScrollY = useRef(0);
@@ -135,7 +136,7 @@ const Navbar = () => {
           </div>
           
           <div className={styles.location}>
-            <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/pin-4d436a.svg" alt="pin" className={styles.pinIcon} />
+            <MapPin size={16} color="#2874f0" />
             <span className={styles.locationText}>Location not set</span>
             <span className={styles.locationLink}>Select delivery location {'>'}</span>
           </div>
@@ -144,11 +145,20 @@ const Navbar = () => {
         {/* Middle Row */}
         <div className={styles.middleRow}>
           <div className={styles.searchBar}>
-            <Search className={styles.searchIcon} size={20} />
+            <Search className={styles.searchIcon} size={20} onClick={() => {
+              if (searchQuery.trim()) navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+            }} style={{ cursor: 'pointer' }} />
             <input 
               type="text" 
               placeholder="Search for Products, Brands and More" 
               className={styles.searchInput}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                }
+              }}
             />
           </div>
 
