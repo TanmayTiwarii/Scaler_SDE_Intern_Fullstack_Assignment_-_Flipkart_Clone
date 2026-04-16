@@ -70,55 +70,55 @@ To run this application efficiently on your local machine, complete the followin
 - Setting up a free [Supabase](https://supabase.com/) Account.
 
 ### 1. Clone the repository
-\`\`\`bash
+```bash
 git clone <repository_url>
 cd Scaler_SDE_Intern_Fullstack_Assignment_-_Flipkart_Clone
-\`\`\`
+```
 
 ### 2. Backend Setup
 Navigate to the \`backend\` directory and install dependencies:
-\`\`\`bash
+```bash
 cd backend
 npm install
-\`\`\`
+```
 
 Configure your environment variables by creating a \`.env\` file in the \`backend\` directory:
-\`\`\`env
+```env
 PORT=5000
 JWT_SECRET=your_super_secret_jwt_key
 SUPABASE_URL=your_supabase_project_url
 SUPABASE_ANON_KEY=your_supabase_anon_api_key
-\`\`\`
+```
 
 Run the Express server:
-\`\`\`bash
+```bash
 npm run dev
 # The backend will typically run on http://localhost:5000
-\`\`\`
+```
 
 ### 3. Frontend Setup
 Open a new terminal window, navigate to the \`frontend\` directory, and install dependencies:
-\`\`\`bash
+```bash
 cd frontend
 npm install
-\`\`\`
+```
 
 Configure your frontend environment variables by creating a \`.env\` file in the \`frontend\` directory:
-\`\`\`env
+```env
 VITE_API_URL=http://localhost:5000/api
-\`\`\`
+```
 
 Start the Vite development server:
-\`\`\`bash
+```bash
 npm run dev
 # The UI will load at http://localhost:5173
-\`\`\`
+```
 
 ### 4. Seeding Mock Data
 If your database is empty, there is a built-in script specifically designed to seed realistic products across all categories. Ensure your `.env` has appropriate keys inside `/backend/` and run:
-\`\`\`bash
+```bash
 node seed.js
-\`\`\`
+```
 
 ---
 *Created carefully as a demonstration of high-level full-stack e-commerce architecture capabilities.*
