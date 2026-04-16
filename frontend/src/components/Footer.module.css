@@ -118,3 +118,63 @@
 .paymentIcon {
   height: 20px;
 }
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .topSection {
+    flex-direction: column;
+    padding: 24px 0;
+  }
+  
+  .linksGrid {
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 0 16px;
+  }
+
+  .addressGrid {
+    border-left: none;
+    border-top: 1px solid #454d5e;
+    padding: 24px 16px 0;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  
+  .bottomBar {
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .column {
+    flex: 1 1 45%;
+  }
+
+  .addressCol {
+    flex: 1 1 100%;
+  }
+  
+  .bottomItem {
+    width: 45%;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .copyright {
+    width: 100%;
+    text-align: center;
+  }
+
+  .paymentMethods {
+    display: none;
+  }
+}

@@ -10,11 +10,32 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const { user, token } = useAuth();
 
-  // Load cart items
+  // Load cart items and handle syncing
   useEffect(() => {
     const fetchCart = async () => {
       if (user && token) {
         try {
+          // Sync guest cart to user cart
+          const savedCart = localStorage.getItem('cartItems');
+          if (savedCart) {
+            const parsedCart = JSON.parse(savedCart);
+            if (parsedCart && parsedCart.length > 0) {
+              // Upload guest items
+              for (const item of parsedCart) {
+                try {
+                  await api.post('/cart/add', {
+                    productId: item.id,
+                    quantity: item.quantity
+                  });
+                } catch (e) {
+                  console.error('Failed to sync guest cart item', e);
+                }
+              }
+              // Clear guest cart once synced
+              localStorage.removeItem('cartItems');
+            }
+          }
+          
           const res = await api.get('/cart');
           setCartItems(res.data.cart);
         } catch (err) {
@@ -24,6 +45,8 @@ export const CartProvider = ({ children }) => {
         const savedCart = localStorage.getItem('cartItems');
         if (savedCart) {
           setCartItems(JSON.parse(savedCart));
+        } else {
+          setCartItems([]);
         }
       }
     };

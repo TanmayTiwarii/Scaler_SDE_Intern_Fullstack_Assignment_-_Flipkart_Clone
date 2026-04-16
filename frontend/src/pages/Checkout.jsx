@@ -27,6 +27,8 @@ const Checkout = () => {
     if (user) fetchAddresses();
   }, [user, loading]);
 
+  const [checkoutStep, setCheckoutStep] = useState(1);
+
   const fetchAddresses = async () => {
     try {
       const res = await api.get('/addresses');
@@ -52,14 +54,20 @@ const Checkout = () => {
     } catch (err) { console.error('Error saving address', err); alert('Failed to save address'); }
   };
 
+  const handleDeliverHere = () => {
+    if (selectedAddressId) {
+      setCheckoutStep(2);
+    }
+  };
+
   const handlePlaceOrder = async () => {
     const selectedAddress = addresses.find(a => a.id === selectedAddressId);
     if (!selectedAddress) { alert('Please select a delivery address'); return; }
     try {
       setPlacingOrder(true);
-      await api.post('/orders', { items: cartItems, shippingAddress: selectedAddress, total: getCartTotal() });
+      const res = await api.post('/orders', { items: cartItems, shippingAddress: selectedAddress, total: getCartTotal() });
       clearCart();
-      navigate('/orders');
+      navigate(`/order-confirmation/${res.data.order.id}`);
     } catch (error) { console.error('Error placing order', error); alert('Failed to place order.'); }
     finally { setPlacingOrder(false); }
   };
@@ -76,6 +84,8 @@ const Checkout = () => {
   const discount = cartItems.reduce((t, i) => t + ((i.originalPrice || i.price) - i.price) * i.quantity, 0);
   const totalOriginal = cartItems.reduce((t, i) => t + (i.originalPrice || i.price) * i.quantity, 0);
 
+  const activeAddress = addresses.find(a => a.id === selectedAddressId);
+
   return (
     <div className={styles.checkoutPage}>
       {/* Checkout Header */}
@@ -84,7 +94,7 @@ const Checkout = () => {
           <div className={styles.bannerSteps}>
             <div className={`${styles.bannerStep} ${styles.bannerStepActive}`}><span>1</span> ADDRESS</div>
             <div className={styles.bannerDivider}></div>
-            <div className={styles.bannerStep}><span>2</span> ORDER SUMMARY</div>
+            <div className={`${styles.bannerStep} ${checkoutStep === 2 ? styles.bannerStepActive : ''}`}><span>2</span> ORDER SUMMARY</div>
             <div className={styles.bannerDivider}></div>
             <div className={styles.bannerStep}><span>3</span> PAYMENT</div>
           </div>
@@ -100,10 +110,24 @@ const Checkout = () => {
 
           {/* Step 1: Delivery Address */}
           <div className={styles.stepBox}>
-            <div className={styles.stepHeader}>
-              <span className={styles.stepNumber}>1</span>
-              DELIVERY ADDRESS
+            <div className={checkoutStep === 1 ? styles.stepHeader : styles.stepHeaderInactive} style={{display:'flex', justifyContent:'space-between', width:'100%', alignItems:'center'}}>
+              <div>
+                <span className={checkoutStep === 1 ? styles.stepNumber : styles.stepNumberInactive}>1</span>
+                DELIVERY ADDRESS
+                {checkoutStep === 2 && activeAddress && (
+                  <span style={{marginLeft:'16px', fontSize:'14px', fontWeight:'normal', color:'#212121'}}>
+                    {activeAddress.name}, {activeAddress.pincode}
+                  </span>
+                )}
+              </div>
+              {checkoutStep === 2 && (
+                <button onClick={() => setCheckoutStep(1)} style={{background:'none', border:'none', color:'#2874f0', fontWeight:'600', cursor:'pointer', fontSize:'14px'}}>
+                  CHANGE
+                </button>
+              )}
             </div>
+            
+            {checkoutStep === 1 && (
             <div className={styles.stepContent}>
               {addresses.map(addr => (
                 <div key={addr.id}
@@ -125,7 +149,7 @@ const Checkout = () => {
                       {addr.address_line}, {addr.locality && `${addr.locality}, `}{addr.city}, {addr.state} - <strong>{addr.pincode}</strong>
                     </p>
                     {selectedAddressId === addr.id && (
-                      <button className={styles.deliverHereBtn} onClick={(e) => e.stopPropagation()}>
+                      <button className={styles.deliverHereBtn} onClick={(e) => { e.stopPropagation(); handleDeliverHere(); }}>
                         DELIVER HERE
                       </button>
                     )}
@@ -192,33 +216,57 @@ const Checkout = () => {
                 </div>
               )}
             </div>
+            )}
           </div>
 
           {/* Step 2: Order Summary */}
           <div className={styles.stepBox}>
-            <div className={styles.stepHeaderInactive}>
-              <span className={styles.stepNumberInactive}>2</span>
+            <div className={checkoutStep === 2 ? styles.stepHeader : styles.stepHeaderInactive}>
+              <span className={checkoutStep === 2 ? styles.stepNumber : styles.stepNumberInactive}>2</span>
               ORDER SUMMARY
               <span className={styles.stepItemCount}>{cartItems.length} item{cartItems.length > 1 ? 's' : ''}</span>
             </div>
-            <div className={styles.orderPreview}>
-              {cartItems.slice(0, 3).map(item => (
-                <div key={item.id} className={styles.previewItem}>
-                  <img src={item.image} alt={item.title} className={styles.previewImg} />
+            {checkoutStep === 2 && (
+              <div className={styles.orderPreview} style={{flexDirection: 'column', padding: '16px 24px'}}>
+                <div style={{display:'flex', gap:'16px'}}>
+                  {cartItems.slice(0, 3).map(item => (
+                    <div key={item.id} className={styles.previewItem}>
+                      <img src={item.image} alt={item.title} className={styles.previewImg} />
+                    </div>
+                  ))}
+                  {cartItems.length > 3 && (
+                    <div className={styles.previewMore}>+{cartItems.length - 3}</div>
+                  )}
                 </div>
-              ))}
-              {cartItems.length > 3 && (
-                <div className={styles.previewMore}>+{cartItems.length - 3}</div>
-              )}
-            </div>
+                <div style={{marginTop: '24px'}}>
+                  <button className={styles.deliverHereBtn} onClick={() => setCheckoutStep(3)}>CONTINUE</button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Step 3: Payment */}
           <div className={styles.stepBox}>
-            <div className={styles.stepHeaderInactive}>
-              <span className={styles.stepNumberInactive}>3</span>
+            <div className={checkoutStep === 3 ? styles.stepHeader : styles.stepHeaderInactive}>
+              <span className={checkoutStep === 3 ? styles.stepNumber : styles.stepNumberInactive}>3</span>
               PAYMENT OPTIONS
             </div>
+            {checkoutStep === 3 && (
+              <div style={{padding: '16px 24px'}}>
+                <div style={{padding: '16px', background: '#f5faff', border: '1px solid #e0e0e0', borderRadius: '4px', marginBottom: '16px', display:'flex', alignItems:'center', gap:'16px'}}>
+                   <div style={{width:'20px', height:'20px', borderRadius:'50%', border:'6px solid #2874f0', display:'inline-block'}}></div>
+                   <span style={{fontWeight:'500'}}>Cash on Delivery (COD)</span>
+                </div>
+                <button
+                  className={styles.placeOrderBtn}
+                  onClick={handlePlaceOrder}
+                  disabled={!selectedAddressId || placingOrder}
+                  style={{width: '250px'}}
+                >
+                  {placingOrder ? 'Placing Order...' : 'CONFIRM ORDER'}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -257,14 +305,6 @@ const Checkout = () => {
             <div className={styles.trustItem}><Truck size={20} /> <span>Free Delivery</span></div>
             <div className={styles.trustItem}><Package size={20} /> <span>Easy Returns</span></div>
           </div>
-
-          <button
-            className={styles.placeOrderBtn}
-            onClick={handlePlaceOrder}
-            disabled={!selectedAddressId || placingOrder}
-          >
-            {placingOrder ? 'Placing Order...' : 'PLACE ORDER'}
-          </button>
         </div>
       </div>
     </div>
