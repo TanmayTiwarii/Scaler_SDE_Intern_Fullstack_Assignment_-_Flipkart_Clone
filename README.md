@@ -6,8 +6,13 @@ A pixel-perfect, highly responsive, and fully functional full-stack e-commerce w
 
 ## 🚀 Features & Functionalities
 
-- **Stunning UI / UX**: Deep attention to detail using standard Flipkart design systems, including grouped product rows, hover effects, collapsible navigation menus, interactive UI micro-animations, and full mobile responsiveness.
-- **Robust Authentication**: Secure sign-up and login utilizing `bcrypt` and JWT validation.
+### ✨ Special Highlight Features
+- 🌟 **Robust Authentication**: Bank-grade secure sign-up and login utilizing `bcrypt` hashing and stateless JWT validation.
+- 🌟 **Automated Email Confirmation**: Automatically dispatches dynamically generated, itemized HTML email receipts mapping real order IDs straight to a user's inbox upon successful checkout using the **Resend API**.
+- 🌟 **Global Search & Filtering**: Highly robust local state and dynamic backend querying engineered to accommodate real-time, instantaneous search queries mapping exactly to backend catalogs.
+
+### 🛍️ Core E-Commerce Capabilities
+- **Stunning UI / UX**: Deep attention to detail using premium Flipkart design systems, including grouped product rows, glassmorphism hover effects, collapsible navigation menus, interactive UI micro-animations, and full mobile responsiveness.
 - **Smart Cart Persistence**: 
   - Allows **guest users** to freely add or modify items using local browser storage.
   - Automatically **syncs and migrates** the guest cart into a secure database session the moment the user signs in.
@@ -16,8 +21,6 @@ A pixel-perfect, highly responsive, and fully functional full-stack e-commerce w
   - Dynamic 3-step checkout process (Delivery Address -> Order Summary -> Payment).
   - Ability to seamlessly save, swap, and manage multiple delivery addresses.
   - Generates authentic Order IDs post-confirmation.
-  - **Order Confirmation Emails**: Automatically dispatches itemized HTML email receipts dynamically to users upon successful checkout using the Resend API.
-- **Global Search & Filtering**: Built to accommodate real-time search queries mapping exactly to backend catalogs.
 
 ---
 
