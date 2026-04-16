@@ -59,6 +59,8 @@ exports.getProducts = async (req, res) => {
     // Format data to flatten image_url and category name
     const products = data.map(p => ({
       ...p,
+      originalPrice: p.original_price,
+      inStock: p.in_stock,
       image: p.product_images.find(img => img.is_primary)?.image_url || p.product_images[0]?.image_url,
       category: p.categories?.name
     }));
@@ -88,6 +90,8 @@ exports.getProductById = async (req, res) => {
 
     const formattedProduct = {
       ...product,
+      originalPrice: product.original_price,
+      inStock: product.in_stock,
       images: product.product_images.map(img => img.image_url),
       image: product.product_images.find(img => img.is_primary)?.image_url || product.product_images[0]?.image_url,
       category: product.categories?.name

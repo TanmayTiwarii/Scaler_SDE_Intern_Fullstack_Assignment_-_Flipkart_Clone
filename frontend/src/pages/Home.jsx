@@ -22,14 +22,11 @@ const Home = () => {
           params.category = slug;
         }
 
-        console.log('Fetching products with slug:', slug, 'params:', params);
-        
         const [response] = await Promise.all([
           api.get('/products', { params }),
           new Promise(resolve => setTimeout(resolve, 800))
         ]);
         
-        console.log('Products received:', response.data.products.length);
         setProducts(response.data.products);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -45,46 +42,70 @@ const Home = () => {
     ? slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
     : 'Suggested For You';
 
+  // Group products for Home page
+  const electronics = products.filter(p => ['Electronics', 'Appliances', 'Mobiles', 'Laptops'].includes(p.category));
+  const fashion = products.filter(p => ['Fashion', 'Beauty'].includes(p.category));
+  const others = products.filter(p => !['Electronics', 'Appliances', 'Mobiles', 'Laptops', 'Fashion', 'Beauty'].includes(p.category));
+
+  const renderGroup = (title, productList, bgColor) => {
+    if (!productList || productList.length === 0) return null;
+    return (
+      <div className={styles.groupContainer} style={{ backgroundColor: bgColor }}>
+        <div className={styles.groupHeader}>
+          <h2 className={styles.groupTitle}>{title}</h2>
+          <div className={styles.arrowCircleBlack}>
+            <ArrowRight color="white" size={16} strokeWidth={3} />
+          </div>
+        </div>
+        <div className={styles.groupRow}>
+          {productList.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={`container ${styles.homeContainer}`}>
+      {/* Hero Ad Banner */}
+      {(!slug || slug.toLowerCase() === 'appliances') && (
+        <div style={{ marginBottom: '24px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+          <img 
+            src="https://rukminim2.flixcart.com/fk-p-flap/2000/980/image/c9f052259d2684e0.png" 
+            alt="Top Promo Ad"
+            style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '400px', objectFit: 'cover' }} 
+          />
+        </div>
+      )}
+
       {/* Promo Banners */}
       <div className={styles.bannerContainer}>
-        {/* Banner 1: Healthcare */}
+        {/* Banner 1 */}
         <div className={styles.bannerImageWrapper}>
           <img 
-            src="https://rukminim1.flixcart.com/fk-p-flap/700/300/image/cd94f2d3ec3d7904.png?q=90" 
-            alt="Healthcare essentials" 
+            src="https://rukminim2.flixcart.com/fk-p-flap/2000/980/image/1a445c84d1bb5579.png" 
+            alt="Healthcare Promo" 
             className={styles.bannerImage}
-            onError={(e) => { e.target.src = "https://placehold.co/700x300/e6f2ec/025d43?text=Healthcare+essentials+Up+to+80%25+Off" }}
           />
         </div>
 
-        {/* Banner 2: vivo T5x */}
+        {/* Banner 2 */}
         <div className={styles.bannerImageWrapper}>
            <img 
-              src="https://rukminim1.flixcart.com/fk-p-flap/700/300/image/3d6ce704afcd3243.png?q=90" 
-              alt="vivo T5x 5G" 
+              src="https://rukminim2.flixcart.com/fk-p-flap/2000/980/image/cf0d3949fe354967.png" 
+              alt="Mobiles Promo" 
               className={styles.bannerImage}
-              onError={(e) => { e.target.src = "https://placehold.co/700x300/f8e9ea/c6000e?text=vivo+T5x+5G" }}
             />
         </div>
 
-        {/* Banner 3: SAMSUNG */}
+        {/* Banner 3 */}
         <div className={styles.bannerImageWrapper}>
             <img 
-              src="https://rukminim1.flixcart.com/fk-p-flap/700/300/image/d00e62df94dcd87b.png?q=90" 
-              alt="SAMSUNG Galaxy" 
+              src="https://rukminim2.flixcart.com/fk-p-flap/2000/980/image/839a12988ca0b41c.jpg" 
+              alt="Electronics Promo" 
               className={styles.bannerImage}
-              onError={(e) => { e.target.src = "https://placehold.co/700x300/e0ebf9/1c4587?text=SAMSUNG+Galaxy+S25+FE" }}
             />
-        </div>
-      </div>
-      
-      {/* Product Section */}
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>{categoryTitle}</h2>
-        <div className={styles.arrowCircle}>
-          <ArrowRight color="white" size={16} strokeWidth={3} />
         </div>
       </div>
       
@@ -94,12 +115,23 @@ const Home = () => {
             <ProductSkeleton key={`skeleton-${index}`} />
           ))}
         </div>
+      ) : slug ? (
+        <>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>{categoryTitle}</h2>
+          </div>
+          <div className={styles.productGrid}>
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </>
       ) : (
-        <div className={styles.productGrid}>
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        <>
+          {renderGroup('Top Picks', others, '#fcf0e4')}
+          {renderGroup('Best Gadgets & Appliances', electronics, '#e6e0fa')}
+          {renderGroup('Widest collection', fashion, '#dceddf')}
+        </>
       )}
     </div>
   );
