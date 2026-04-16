@@ -16,6 +16,7 @@ A pixel-perfect, highly responsive, and fully functional full-stack e-commerce w
   - Dynamic 3-step checkout process (Delivery Address -> Order Summary -> Payment).
   - Ability to seamlessly save, swap, and manage multiple delivery addresses.
   - Generates authentic Order IDs post-confirmation.
+  - **Order Confirmation Emails**: Automatically dispatches itemized HTML email receipts dynamically to users upon successful checkout using the Resend API.
 - **Global Search & Filtering**: Built to accommodate real-time search queries mapping exactly to backend catalogs.
 
 ---
@@ -34,6 +35,7 @@ A pixel-perfect, highly responsive, and fully functional full-stack e-commerce w
 - **Framework**: Node.js & Express.js
 - **Database**: Supabase (PostgreSQL)
 - **Authentication**: Custom JWT-based authentication
+- **Email Service**: Resend API for transactional email delivery
 - **API Architecture**: REST APIs focusing on clean MVC controller/routing splits.
 
 ---
@@ -88,6 +90,8 @@ PORT=5000
 JWT_SECRET=your_super_secret_jwt_key
 SUPABASE_URL=your_supabase_project_url
 SUPABASE_ANON_KEY=your_supabase_anon_api_key
+RESEND_API_KEY=your_resend_api_key_here
+RESEND_FROM_EMAIL=orders@your-verified-domain.com
 ```
 
 Run the Express server:
