@@ -16,6 +16,7 @@ const Checkout = () => {
   const [showForm, setShowForm] = useState(false);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
   const [placingOrder, setPlacingOrder] = useState(false);
+  const [orderEmail, setOrderEmail] = useState('');
 
   const [form, setForm] = useState({
     name: '', phone: '', pincode: '', locality: '',
@@ -63,9 +64,10 @@ const Checkout = () => {
   const handlePlaceOrder = async () => {
     const selectedAddress = addresses.find(a => a.id === selectedAddressId);
     if (!selectedAddress) { alert('Please select a delivery address'); return; }
+    if (!orderEmail || !orderEmail.includes('@')) { alert('Please enter a valid email address for order confirmation'); return; }
     try {
       setPlacingOrder(true);
-      const res = await api.post('/orders', { items: cartItems, shippingAddress: selectedAddress, total: getCartTotal() });
+      const res = await api.post('/orders', { items: cartItems, shippingAddress: selectedAddress, total: getCartTotal(), email: orderEmail });
       clearCart();
       navigate(`/order-confirmation/${res.data.order.id}`);
     } catch (error) { console.error('Error placing order', error); alert('Failed to place order.'); }
@@ -253,6 +255,16 @@ const Checkout = () => {
             </div>
             {checkoutStep === 3 && (
               <div style={{padding: '16px 24px'}}>
+                <div style={{marginBottom: '20px'}}>
+                  <label style={{display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500'}}>Email for confirmation</label>
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={orderEmail}
+                    onChange={(e) => setOrderEmail(e.target.value)}
+                    style={{width: '100%', maxWidth: '300px', padding: '10px 12px', border: '1px solid #e0e0e0', borderRadius: '4px', fontSize: '14px', outline: 'none'}}
+                  />
+                </div>
                 <div style={{padding: '16px', background: '#f5faff', border: '1px solid #e0e0e0', borderRadius: '4px', marginBottom: '16px', display:'flex', alignItems:'center', gap:'16px'}}>
                    <div style={{width:'20px', height:'20px', borderRadius:'50%', border:'6px solid #2874f0', display:'inline-block'}}></div>
                    <span style={{fontWeight:'500'}}>Cash on Delivery (COD)</span>
